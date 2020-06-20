@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Authorization;
 using WebApi.Services;
 using WebApi.Models;
+using JWTAuthenticationExample.Models;
 
 namespace WebApi.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class UsersController : ControllerBase
@@ -30,10 +30,19 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = Policies.Admin)]
         public IActionResult GetAll()
         {
             var users = _userService.GetAll();
             return Ok(users);
+        }
+
+        [HttpGet("{id}")]
+        [Authorize(Policy = Policies.User)]
+        public IActionResult GetSingle(int id)
+        {
+            var user = _userService.GetSingle(id);
+            return Ok(user);
         }
     }
 }

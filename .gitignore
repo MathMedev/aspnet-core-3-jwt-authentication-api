@@ -40,3 +40,6 @@ typings
 # .NET compiled files
 bin
 obj
+/WebApi.csproj.user
+/.vs/WebApi
+/Properties/launchSettings.json

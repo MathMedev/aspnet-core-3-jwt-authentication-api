@@ -7,6 +7,7 @@ using WebApi.Services;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using JWTAuthenticationExample.Models;
 
 namespace WebApi
 {
@@ -48,6 +49,11 @@ namespace WebApi
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
+            });
+            services.AddAuthorization(config =>
+            {
+                config.AddPolicy(Policies.Admin, Policies.AdminPolicy());
+                config.AddPolicy(Policies.User, Policies.UserPolicy());
             });
 
             // configure DI for application services
