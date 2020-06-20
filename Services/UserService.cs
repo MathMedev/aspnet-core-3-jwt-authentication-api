@@ -24,20 +24,25 @@ namespace WebApi.Services
         // users hardcoded for simplicity, store in a db with hashed passwords in production applications
         private List<User> _users = new List<User>
         { 
-            new User { Id = 1, FirstName = "Test", LastName = "User", UserRole="User", Username = "test", Password = "test" }, 
-            new User { Id = 2, FirstName = "Test2", LastName = "Admin", UserRole="Admin", Username = "admin", Password = "asdf" }
+            new User { Id = 1, FirstName = "Test", LastName = "User", UserRole="User", Username = "test", Password = "1000.e1lXDDlDs99MvPmgauNoGQ==.batfYRhIg13vvhh0E9ZLD9JkhtN5dyjAcOPqQ3179OE=" }, 
+            new User { Id = 2, FirstName = "Test2", LastName = "Admin", UserRole="Admin", Username = "admin", Password = "1000.V2xnyob1sFppaDlaRQWQAA==.LfKoRBJUsN7n4HLK9e/FdmBPiJhgh45lbj8CpjsIK8U=" }
         };
 
         private readonly AppSettings _appSettings;
+        private readonly IPasswordHasher passwordHasher;
 
-        public UserService(IOptions<AppSettings> appSettings)
+        public UserService(IOptions<AppSettings> appSettings, IPasswordHasher passwordHasher)
         {
             _appSettings = appSettings.Value;
+            this.passwordHasher = passwordHasher ?? throw new ArgumentNullException(nameof(passwordHasher));
         }
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-            var user = _users.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
+            //var pw1 = this.passwordHasher.Hash("test");
+            //var pw2 = this.passwordHasher.Hash("asdf");
+
+            var user = _users.SingleOrDefault(x => x.Username == model.Username && passwordHasher.Check(x.Password, model.Password).Verified);
 
             // return null if user not found
             if (user == null) return null;
